@@ -29,6 +29,8 @@ def scrape_all():
     # Close the browser
     browser.quit()
 
+    return data
+
 def mars_news(browser):   
     # Visit the mars nasa news site
     url = 'https://redplanetscience.com'
@@ -82,11 +84,12 @@ def featured_image(browser):
 
     return img_url
 
-
 def mars_facts():
     # Error Handling
     try:
-        df = pd.read_html('https://galaxyfacts-mars.com')[0]
+        #df = pd.read_html('https://galaxyfacts-mars.com')[0]
+        df = pd.read_html('https://data-class-mars-facts.s3.amazonaws.com/Mars_Facts/index.html')[0]
+        
     except BaseException:
         return None
 
@@ -95,7 +98,6 @@ def mars_facts():
 
     return df.to_html()
 
-
 if __name__ == "__main__":
-    #---> If running as script, print scraped data <---
+    # If running as script, print scraped data
     print(scrape_all())
