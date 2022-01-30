@@ -13,22 +13,21 @@ import datetime as dt
 def scrape_all():
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=True)
-    # headless=True so we don't see the browser session
-
+    
     news_title, news_paragraph = mars_news(browser)
     
-    # After we runn all scraping, functions we store results in a dictionary
+    #Create data dictionary to return
     data = {
         "news_title": news_title,
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
+        "hemispheres": hemispheres_data(browser),        
         "last_modified": dt.datetime.now()
     }
 
     # Close the browser
     browser.quit()
-
     return data
 
 def mars_news(browser):   
@@ -98,6 +97,31 @@ def mars_facts():
     df.set_index('Description', inplace=True)
 
     return df.to_html(classes="table table-striped")
+
+def hemispheres_data(browser):
+     # Visit URL
+    url = 'https://marshemispheres.com/'
+    browser.visit(url)
+
+    hemisphere_image_urls = []
+
+    # Get all links
+    aLinks = browser.find_by_css('a.product-item img')
+
+    for i in range(len(aLinks)):
+        dLinks = {}
+        browser.find_by_css('a.product-item img')[i].click()
+        fullImg = browser.links.find_by_text('Sample').first
+        dLinks['img_url'] = fullImg['href']
+        dLinks['title'] =  browser.find_by_css('h2.title').text
+        
+        # add to the list
+        hemisphere_image_urls.append(dLinks)
+        
+        #we need to navigate back to the start page
+        browser.back()
+
+    return hemisphere_image_urls
 
 if __name__ == "__main__":
     # If running as script, print scraped data
