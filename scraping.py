@@ -96,8 +96,9 @@ def mars_facts():
     df.columns=['Description', 'Mars', 'Earth']
     df.set_index('Description', inplace=True)
 
-    return df.to_html(classes="table table-striped")
+    return df.to_html(classes="table table-striped table-dark")
 
+# Deliverable 3: 
 def hemispheres_data(browser):
      # Visit URL
     url = 'https://marshemispheres.com/'
